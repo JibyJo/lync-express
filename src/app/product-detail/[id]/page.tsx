@@ -138,26 +138,41 @@ export default function ProductPage() {
             </span>
           </div>
 
-          <h1 className='text-gray-900 font-poppins font-bold text-xl sm:text-2xl leading-6 tracking-normal underline'>
+          <h1 className='text-gray-900 font-poppins font-normal text-xl sm:text-2xl leading-6 tracking-normal underline'>
             {product.name}
           </h1>
 
-          <p className='text-gray-600 text-sm sm:text-base'>
-            <strong>Sku:</strong>{' '}
-            <span className='text-blue-600'>{product.sku}</span> <br />
-            <strong>Brand:</strong>{' '}
-            <span className='text-black font-semibold'>{product.brand}</span>{' '}
-            <br />
-            <strong>Availability:</strong>{' '}
-            <span className='text-green-600 font-semibold'>
-              {product.availability}
-            </span>{' '}
-            <br />
-            <strong>Category:</strong>{' '}
-            <span className='text-black font-semibold'>{product.category}</span>
-          </p>
+          <div className='grid grid-cols-2 gap-x-8 gap-y-2 text-gray-700 underline text-sm sm:text-base'>
+            <div className='flex items-center gap-1  pb-1'>
+              <strong className='whitespace-nowrap text-[#5F6C72]'>Sku:</strong>
+              <span className='text-black font-semibold'>{product.sku}</span>
+            </div>
+            <div className='flex items-center gap-1  pb-1'>
+              <strong className='whitespace-nowrap text-[#5F6C72]'>
+                Brand:
+              </strong>
+              <span className='text-black font-semibold'>{product.brand}</span>
+            </div>
 
-          <p className='text-2xl sm:text-3xl font-bold text-blue-600'>
+            <div className='flex items-center gap-1  pb-1'>
+              <strong className='whitespace-nowrap text-[#5F6C72]'>
+                Availability:
+              </strong>
+              <span className='text-green-600 font-semibold'>
+                {product.availability}
+              </span>
+            </div>
+            <div className='flex items-center gap-1  pb-1'>
+              <strong className='whitespace-nowrap text-[#5F6C72]'>
+                Category:
+              </strong>
+              <span className='text-black font-semibold'>
+                {product.category}
+              </span>
+            </div>
+          </div>
+
+          <p className='text-2xl sm:text-3xl font-normal text-blue-600'>
             ₹{product.price}
           </p>
 
