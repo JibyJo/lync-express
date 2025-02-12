@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { CloseCircleTwoTone } from '@ant-design/icons';
 import Header from '@/components/Header';
+import { toast } from 'react-toastify';
 
 interface CartItem {
   productId: string;
@@ -28,31 +29,34 @@ export default function CartPage() {
   const [cartData, setCartData] = useState<CartData | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    async function fetchCart() {
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        router.push('/login');
-        return;
-      }
-
-      const res = await fetch('/api/cart-listing', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await res.json();
-      if (data.error) {
-        console.log('Error fetching cart:', data.error);
-        router.push('/login');
-      } else {
-        setCartData(data);
-      }
+  async function fetchCart() {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      router.push('/login');
+      return;
     }
 
+    const res = await fetch('/api/cart-listing', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (data.error) {
+      console.log('Error fetching cart:', data.error);
+      router.push('/login');
+    } else {
+      if (data?.cart?.length === 0) {
+        toast.info('Your cart is empty');
+        router.push('/');
+      }
+      setCartData(data);
+    }
+  }
+  useEffect(() => {
     fetchCart();
-  }, [router]);
+  }, []);
 
   if (!cartData) {
     return <p className='text-center mt-10 text-gray-700'>Loading...</p>;
