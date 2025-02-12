@@ -117,20 +117,20 @@ export default function ProductPage() {
         <Header />
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-8 pt-20 px-6 '>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-8 pt-20 px-6'>
         <div className='flex justify-center'>
-          <div className='relative w-full max-w-[600px] h-auto rounded-lg'>
+          <div className='relative w-full max-w-[600px] h-full md:h-[500px] rounded-lg overflow-hidden'>
             <Image
               src={product.image_url ?? '/logo.png'}
               alt={product.name}
               width={600}
-              height={638}
-              className='w-full h-auto object-contain rounded-lg'
+              height={500}
+              className='w-full h-full object-cover rounded-lg'
             />
           </div>
         </div>
 
-        <div className='space-y-4'>
+        <div className='flex flex-col justify-between h-full md:h-[500px]'>
           <div className='flex items-center space-x-2 text-yellow-500 font-semibold'>
             <span>{getStarIcons(product.rating)}</span>
             <span className='text-gray-600 text-sm sm:text-base'>
