@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
 import User from '@/models/User';
 import connectToDatabase from '@/lib/mongodb';
 import { DecodedToken } from '../order-listing/route';
+import { verifyToken } from '@/utils/auth';
 
-const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET || 'your_secret_key';
 export interface CartItem {
   item: number;
   productId: { _id: string; price: number };
@@ -30,7 +29,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const decoded: DecodedToken = jwt.verify(token, JWT_SECRET) as DecodedToken;
+    const decoded: DecodedToken = verifyToken(token) as DecodedToken;
     const user = await User.findById(decoded.userId).populate('cart.productId');
 
     if (!user) {

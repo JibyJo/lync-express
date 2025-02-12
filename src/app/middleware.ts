@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET ?? '';
+import { verifyToken } from '@/utils/auth';
 
-const protectedRoutes = ['/api/cart', '/api/orders'];
+const protectedRoutes = ['/api/cart', '/api/orders', '/orders'];
 
 export function middleware(req: NextRequest) {
   const urlPath = req.nextUrl.pathname;
@@ -21,7 +20,7 @@ export function middleware(req: NextRequest) {
     const token = authHeader.split(' ')[1];
 
     try {
-      const decoded = jwt.verify(token, JWT_SECRET);
+      const decoded = verifyToken(token);
       req.headers.set('user', JSON.stringify(decoded));
     } catch (error) {
       return NextResponse.json(

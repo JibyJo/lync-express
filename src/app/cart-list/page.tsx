@@ -48,8 +48,8 @@ export default function CartPage() {
 
     const data = await res.json();
     if (data.error) {
+      toast.error(data.error);
       console.log('Error fetching cart:', data.error);
-      router.push('/login');
     } else {
       if (data?.cart?.length === 0) {
         toast.info('Your cart is empty');
@@ -73,11 +73,7 @@ export default function CartPage() {
       },
       body: JSON.stringify({ productId, quantity }),
     });
-    const res = await fetch('/api/cart-listing', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const updatedCart = await res.json();
-    setCartData(updatedCart);
+    await fetchCart();
   };
   const openModal = (productId: string) => {
     setSelectedProductId(productId);
@@ -98,11 +94,7 @@ export default function CartPage() {
     });
 
     setShowModal(false);
-    const res = await fetch('/api/cart-listing', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const updatedCart = await res.json();
-    setCartData(updatedCart);
+    await fetchCart();
   };
   const handleCheckout = async () => {
     const token = localStorage.getItem('authToken');

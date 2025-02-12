@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
 import User from '@/models/User';
 import connectToDatabase from '@/lib/mongodb';
 import Product from '@/models/Products';
 import { DecodedToken } from '../order-listing/route';
 import { CartItem } from '../place-order/route';
-
-const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET ?? '';
+import { verifyToken } from '@/utils/auth';
 
 export async function GET(req: NextRequest) {
   try {
@@ -21,7 +19,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const decoded: DecodedToken = jwt.verify(token, JWT_SECRET) as DecodedToken;
+    const decoded: DecodedToken = verifyToken(token) as DecodedToken;
     const user = await User.findById(decoded.userId);
 
     if (!user) {
