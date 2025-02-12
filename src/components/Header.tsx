@@ -28,7 +28,8 @@ export default function Header() {
 
   const handleLogin = () => {
     if (isSignedIn) {
-      localStorage.removeItem('authToken'); // Only remove the token instead of clearing entire localStorage
+      localStorage.removeItem('authToken');
+      fetch('/api/logout');
       setIsSignedIn(false);
       toast.success('Logged out successfully');
       router.push('/');

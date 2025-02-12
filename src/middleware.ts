@@ -17,7 +17,7 @@ export async function middleware(req: NextRequest) {
   const protectedPageRoutes = ['/cart-list', '/orders', 'order-listing'];
 
   if (protectedPageRoutes.includes(req.nextUrl.pathname) && !token) {
-    return NextResponse.redirect(new URL('/login', req.url));
+    return NextResponse.redirect(new URL('/unauthorized', req.url));
   }
 
   if (protectedRoutes.includes(urlPath)) {
