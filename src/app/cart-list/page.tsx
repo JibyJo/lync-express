@@ -1,0 +1,223 @@
+'use client';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { CloseCircleTwoTone } from '@ant-design/icons';
+import Header from '@/components/Header';
+
+interface CartItem {
+  productId: string;
+  name: string;
+  price: number;
+  imageUrl: string;
+  quantity: number;
+  subTotal: number;
+}
+
+interface CartData {
+  cart: CartItem[];
+  totals: {
+    subtotal: number;
+    discount: number;
+    tax: number;
+    total: number;
+  };
+}
+
+export default function CartPage() {
+  const [cartData, setCartData] = useState<CartData | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    async function fetchCart() {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+
+      const res = await fetch('/api/cart-listing', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      if (data.error) {
+        console.log('Error fetching cart:', data.error);
+        router.push('/login');
+      } else {
+        setCartData(data);
+      }
+    }
+
+    fetchCart();
+  }, [router]);
+
+  if (!cartData) {
+    return <p className='text-center mt-10 text-gray-700'>Loading...</p>;
+  }
+
+  const handleQuantityChange = async (productId: string, quantity: number) => {
+    console.log('quantity', quantity);
+    const token = localStorage.getItem('authToken');
+    await fetch('/api/cart', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ productId, quantity }),
+    });
+
+    const res = await fetch('/api/cart-listing', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const updatedCart = await res.json();
+    setCartData(updatedCart);
+  };
+
+  const handleRemoveItem = async (productId: string) => {
+    const token = localStorage.getItem('authToken');
+    await fetch('/api/cart-remove', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ productId }),
+    });
+
+    const res = await fetch('/api/cart-listing', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const updatedCart = await res.json();
+    setCartData(updatedCart);
+  };
+  const handleCheckout = async () => {
+    const token = localStorage.getItem('authToken');
+    const res = await fetch('/api/place-order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+    if (data.error) {
+      console.error('Checkout failed:', data.error);
+    } else {
+      router.push('/orders');
+    }
+  };
+
+  return (
+    <>
+      <div className='item-center'>
+        <Header />
+      </div>
+
+      <div className='p-6 mt-20 text-[#191C1F] bg-gradient-to-b from-white/[0.3128] to-white/[0.4692] rounded-[12px] shadow-lg'>
+        <div className='flex flex-row justify-between gap-8'>
+          <div className='bg-white flex-1 p-6 rounded-lg shadow'>
+            <h2 className='text-xl font-semibold mb-4'>Shopping Cart</h2>
+
+            <table className='w-full border-collapse'>
+              <thead>
+                <tr className='border-b'>
+                  <th className='py-3 text-left w-[40%]'>Products</th>
+                  <th className='py-3 text-left w-[15%]'>Price</th>
+                  <th className='py-3 text-center w-[20%]'>Quantity</th>
+                  <th className='py-3 text-left w-[15%]'>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cartData.cart.map((item) => (
+                  <tr key={item.productId} className='border-b'>
+                    <td className='flex items-center gap-4 py-3 w-[40%]'>
+                      <button
+                        onClick={() => handleRemoveItem(item.productId)}
+                        className='text-red-500'
+                      >
+                        <CloseCircleTwoTone />
+                      </button>
+                      <Image
+                        src={item.imageUrl}
+                        alt={item.name}
+                        width={50}
+                        height={50}
+                        className='rounded'
+                      />
+                      <span className='text-sm underline text-[#191C1F]'>
+                        {item.name}
+                      </span>
+                    </td>
+
+                    <td className='py-3 text-left w-[15%] text-gray-700'>
+                      ₹{item.price}
+                    </td>
+
+                    <td className='py-3 text-center w-[20%]'>
+                      <div className='flex items-center justify-center border border-[#E4E7E9] rounded-md px-2 py-1 w-fit mx-auto'>
+                        <button
+                          className='text-gray-500 px-2'
+                          onClick={() =>
+                            handleQuantityChange(
+                              item.productId,
+                              Math.max(1, -1)
+                            )
+                          }
+                        >
+                          -
+                        </button>
+                        <input
+                          type='text'
+                          value={item.quantity}
+                          className='w-[40px] text-center bg-transparent outline-none'
+                          readOnly
+                        />
+                        <button
+                          className='text-gray-900 px-2'
+                          onClick={() =>
+                            handleQuantityChange(item.productId, 1)
+                          }
+                        >
+                          +
+                        </button>
+                      </div>
+                    </td>
+
+                    <td className='py-3 text-left w-[15%] font-bold text-[#191C1F]'>
+                      ₹{item.subTotal}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className='bg-gray-100 rounded-lg p-6 w-[30%] h-fit shadow-md'>
+            <h2 className='text-lg font-semibold mb-3'>Cart Totals</h2>
+            <p className='text-gray-700'>
+              Subtotal: ₹{cartData.totals.subtotal}
+            </p>
+            <p className='text-gray-700'>
+              Discount: ₹{cartData.totals.discount}
+            </p>
+            <p className='text-gray-700'>Tax: ₹{cartData.totals.tax}</p>
+            <p className='font-bold text-lg mt-2'>
+              Total: ₹{cartData.totals.total}
+            </p>
+            <button
+              className='bg-yellow-500 text-white py-3 px-6 rounded-lg mt-4 w-full'
+              onClick={handleCheckout}
+            >
+              Proceed to Checkout →
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

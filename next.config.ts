@@ -1,12 +1,19 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'agent.lyncexpress.in',
+        hostname: 's3-alpha-sig.figma.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'example.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'fastly.picsum.photos',
       },
     ],
   },

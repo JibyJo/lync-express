@@ -1,9 +1,9 @@
-import LoginPage from './login';
+import ProductListing from './product-listing/page';
 
 export default function Home() {
   return (
     <>
-      <LoginPage />
+      <ProductListing />
     </>
   );
 }
