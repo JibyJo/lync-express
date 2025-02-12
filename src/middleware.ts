@@ -1,12 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET ?? '';
+import { verifyToken } from '@/utils/auth';
+import { cookies } from 'next/headers';
 
-const protectedRoutes = ['/api/cart', '/api/orders'];
-
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const urlPath = req.nextUrl.pathname;
+  const cookieStore = cookies();
+  const token = (await cookieStore).get('token')?.value;
+  const protectedRoutes = [
+    '/api/cart',
+    '/api/cart-listing',
+    '/api/cart-remove',
+    '/api/order-listing',
+    '/api/place-order',
+  ];
+  const protectedPageRoutes = ['/cart-list', '/orders', 'order-listing'];
+
+  if (protectedPageRoutes.includes(req.nextUrl.pathname) && !token) {
+    return NextResponse.redirect(new URL('/login', req.url));
+  }
 
   if (protectedRoutes.includes(urlPath)) {
     const authHeader = req.headers.get('authorization');
@@ -21,7 +33,7 @@ export function middleware(req: NextRequest) {
     const token = authHeader.split(' ')[1];
 
     try {
-      const decoded = jwt.verify(token, JWT_SECRET);
+      const decoded = verifyToken(token);
       req.headers.set('user', JSON.stringify(decoded));
     } catch (error) {
       return NextResponse.json(

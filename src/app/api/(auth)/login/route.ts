@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import connectToDatabase from '@/lib/mongodb';
 import User from '@/models/User';
+import { cookies } from 'next/headers';
 
 const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET ?? '';
 export async function POST(req: Request) {
@@ -24,6 +25,13 @@ export async function POST(req: Request) {
   const token = jwt.sign({ userId: user._id, email: user.email }, JWT_SECRET, {
     expiresIn: '7d',
   });
-
+  (await cookies()).set({
+    name: 'token',
+    value: token,
+    httpOnly: true,
+    path: '/',
+    secure: true,
+    sameSite: 'strict',
+  });
   return NextResponse.json({ token }, { status: 200 });
 }
