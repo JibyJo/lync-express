@@ -117,9 +117,7 @@ export default function ProductPage() {
         <Header />
       </div>
 
-      {/* Grid Layout for Responsiveness */}
       <div className='grid grid-cols-1 md:grid-cols-2 gap-8 pt-20 px-6'>
-        {/* Image Section */}
         <div className='flex justify-center'>
           <div className='relative w-full max-w-[600px] h-auto rounded-lg'>
             <Image

@@ -30,6 +30,7 @@ export default function Header() {
     if (isSignedIn) {
       localStorage.removeItem('authToken'); // Only remove the token instead of clearing entire localStorage
       setIsSignedIn(false);
+      toast.success('Logged out successfully');
       router.push('/');
     } else {
       router.push('/login');

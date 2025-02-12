@@ -54,8 +54,10 @@ export default function LoginPage() {
             localStorage.removeItem('pendingCartItem');
           }
         }
-
-        router.push('/product-listing');
+        setTimeout(() => {
+          toast.success('Logged in successfully');
+        }, 100);
+        router.push('/');
       }
     } catch (error) {
       toast.error(error.message);
@@ -67,7 +69,6 @@ export default function LoginPage() {
     <>
       <Header />
       <div className='flex flex-col lg:flex-row justify-center items-center min-h-screen px-4 md:px-8'>
-        {/* Left Section (Image) */}
         <div className='w-full lg:w-1/2 flex justify-center mb-8 lg:mb-0'>
           <Image
             src='/truck.png'
@@ -79,7 +80,6 @@ export default function LoginPage() {
           />
         </div>
 
-        {/* Right Section (Form) */}
         <div className='w-full lg:w-1/2 flex justify-center'>
           <div className='w-full max-w-md bg-white bg-opacity-80 backdrop-blur-xl rounded-xl shadow-lg p-6 md:p-10'>
             <h2 className='text-2xl md:text-3xl font-bold text-gray-900 text-left'>
@@ -93,7 +93,6 @@ export default function LoginPage() {
             >
               {({ isSubmitting }) => (
                 <Form>
-                  {/* Email Input */}
                   <div className='mt-6'>
                     <label className='block text-gray-800 text-sm font-semibold'>
                       Email ID <span className='text-red-500'>*</span>
@@ -111,7 +110,6 @@ export default function LoginPage() {
                     />
                   </div>
 
-                  {/* Password Input */}
                   <div className='mt-6'>
                     <label className='block text-gray-800 text-sm font-semibold'>
                       Password <span className='text-red-500'>*</span>
@@ -142,7 +140,6 @@ export default function LoginPage() {
                     />
                   </div>
 
-                  {/* Submit Button */}
                   <button
                     type='submit'
                     className='w-full md:w-40 mt-6 bg-yellow-500 text-white py-3 rounded-lg text-lg font-semibold hover:bg-yellow-600 transition'
