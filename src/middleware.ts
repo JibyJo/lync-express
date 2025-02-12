@@ -1,11 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { verifyToken } from '@/utils/auth';
+import { cookies } from 'next/headers';
 
-const protectedRoutes = ['/api/cart', '/api/orders', '/orders'];
-
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const urlPath = req.nextUrl.pathname;
+  const cookieStore = cookies();
+  const token = (await cookieStore).get('token')?.value;
+  const protectedRoutes = [
+    '/api/cart',
+    '/api/cart-listing',
+    '/api/cart-remove',
+    '/api/order-listing',
+    '/api/place-order',
+  ];
+  const protectedPageRoutes = ['/cart-list', '/orders', 'order-listing'];
+
+  if (protectedPageRoutes.includes(req.nextUrl.pathname) && !token) {
+    return NextResponse.redirect(new URL('/login', req.url));
+  }
 
   if (protectedRoutes.includes(urlPath)) {
     const authHeader = req.headers.get('authorization');
