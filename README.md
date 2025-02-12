@@ -12,6 +12,23 @@ pnpm dev
 bun dev
 ```
 
+## 📝 User Registration API
+
+### **Endpoint**
+
+```http
+POST http://localhost:3000/api/register
+```
+
+### Request body
+
+```
+{
+  "email": "email",
+  "password": "pass"
+}
+```
+
 # Cart API - Discount & Tax Calculation
 
 ## Overview
