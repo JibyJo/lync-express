@@ -62,13 +62,28 @@ export default function CartPage() {
     fetchCart();
   }, []);
 
-  /** ✅ Open Modal with Product ID */
+  const handleQuantityChange = async (productId: string, quantity: number) => {
+    console.log('quantity', quantity);
+    const token = localStorage.getItem('authToken');
+    await fetch('/api/cart', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ productId, quantity }),
+    });
+    const res = await fetch('/api/cart-listing', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const updatedCart = await res.json();
+    setCartData(updatedCart);
+  };
   const openModal = (productId: string) => {
     setSelectedProductId(productId);
     setShowModal(true);
   };
 
-  /** ✅ Remove Item Handler */
   const handleRemoveItem = async () => {
     if (!selectedProductId) return;
 
@@ -163,14 +178,31 @@ export default function CartPage() {
 
                     <td className='py-3 text-center w-[20%]'>
                       <div className='flex items-center justify-center border border-[#E4E7E9] rounded-md px-2 py-1 w-fit mx-auto'>
-                        <button className='text-gray-500 px-2'>-</button>
+                        <button
+                          className='text-gray-500 px-2'
+                          onClick={() =>
+                            handleQuantityChange(
+                              item.productId,
+                              Math.max(1, -1)
+                            )
+                          }
+                        >
+                          -
+                        </button>
                         <input
                           type='text'
                           value={item.quantity}
                           className='w-[40px] text-center bg-transparent outline-none'
                           readOnly
                         />
-                        <button className='text-gray-900 px-2'>+</button>
+                        <button
+                          className='text-gray-900 px-2'
+                          onClick={() =>
+                            handleQuantityChange(item.productId, 1)
+                          }
+                        >
+                          +
+                        </button>
                       </div>
                     </td>
 
