@@ -38,7 +38,6 @@ export default function Header() {
 
   return (
     <div className='flex justify-between items-center w-full bg-white shadow-md px-6 py-3 rounded-xl md:rounded-[32px]'>
-      {/* Logo - Clickable */}
       <div
         className='flex items-center gap-3 cursor-pointer'
         onClick={() => router.push('/')}
@@ -56,7 +55,6 @@ export default function Header() {
         </span>
       </div>
 
-      {/* Cart & Login Buttons */}
       <div className='flex items-center gap-4 sm:gap-6 text-[#ECC75D] text-xl sm:text-2xl md:text-3xl cursor-pointer'>
         {isSignedIn ? (
           <LogoutOutlined
