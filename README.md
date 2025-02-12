@@ -45,3 +45,7 @@ This document explains how the **discount and tax** are applied to the cart tota
 ```typescript
 const discount = subtotal > 2500 ? Math.floor(subtotal * 0.05) : 0;
 ```
+Env Variables:
+
+NEXT_PUBLIC_MONGODB_URI=mongodb+srv://jibymoljosephimi:Global%40123@cluster0.tcqh5.mongodb.net/lync-express?retryWrites=true&w=majority&appName=Cluster0
+NEXT_PUBLIC_JWT_SECRET=lync-express@jibymol
