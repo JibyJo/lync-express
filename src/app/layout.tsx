@@ -34,7 +34,7 @@ export default function RootLayout({
       >
         <ToastProvider />
         <div className='grid grid-cols-1 p-10'>
-          <div className='border rounded-3xl shadow-lg         '>
+          <div className='border rounded-3xl shadow-lg min-h-[60vh]    '>
             <div className='grid grid-cols-1 item-center px-6 py-20'>
               <div className=''>{children}</div>
             </div>

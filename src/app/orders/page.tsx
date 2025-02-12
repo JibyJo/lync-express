@@ -10,12 +10,13 @@ export default function OrderSuccess() {
         <Header />
       </div>
 
-      <div>
-        <div className='text-center'>
+      <div className='p-6 mt-20  min-h-[80vh] bg-gradient-to-b from-white/[0.3128] to-white/[0.4692] rounded-[12px] shadow-lg'>
+        <div className='text-center '>
           <div className='flex justify-center'>
-            <div className='w-10 h-10 bg-green-500 rounded-full flex items-center justify-center'>
-              <CheckCircleTwoTone />
-            </div>
+            <CheckCircleTwoTone
+              twoToneColor={['#22C55E', '#fffff']}
+              className='text-5xl'
+            />
           </div>
           <h2 className='text-xl font-bold mt-4 text-gray-800'>
             Your order is successfully placed

@@ -6,6 +6,7 @@ import { CloseCircleTwoTone } from '@ant-design/icons';
 import Header from '@/components/Header';
 import { toast } from 'react-toastify';
 import Modal from '@/components/Modal';
+import Link from 'next/link';
 
 interface CartItem {
   productId: string;
@@ -62,13 +63,27 @@ export default function CartPage() {
     fetchCart();
   }, []);
 
-  /** ✅ Open Modal with Product ID */
+  const handleQuantityChange = async (productId: string, quantity: number) => {
+    const token = localStorage.getItem('authToken');
+    await fetch('/api/cart', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ productId, quantity }),
+    });
+    const res = await fetch('/api/cart-listing', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const updatedCart = await res.json();
+    setCartData(updatedCart);
+  };
   const openModal = (productId: string) => {
     setSelectedProductId(productId);
     setShowModal(true);
   };
 
-  /** ✅ Remove Item Handler */
   const handleRemoveItem = async () => {
     if (!selectedProductId) return;
 
@@ -152,9 +167,11 @@ export default function CartPage() {
                         height={50}
                         className='rounded'
                       />
-                      <span className='text-sm underline text-[#191C1F]'>
-                        {item.name}
-                      </span>
+                      <Link href={`/product-detail/${item.productId}`}>
+                        <span className='text-sm underline text-[#191C1F]'>
+                          {item.name}
+                        </span>
+                      </Link>
                     </td>
 
                     <td className='py-3 text-left w-[15%] text-gray-700'>
@@ -163,14 +180,31 @@ export default function CartPage() {
 
                     <td className='py-3 text-center w-[20%]'>
                       <div className='flex items-center justify-center border border-[#E4E7E9] rounded-md px-2 py-1 w-fit mx-auto'>
-                        <button className='text-gray-500 px-2'>-</button>
+                        <button
+                          className='text-gray-500 px-2'
+                          onClick={() =>
+                            handleQuantityChange(
+                              item.productId,
+                              Math.max(1, -1)
+                            )
+                          }
+                        >
+                          -
+                        </button>
                         <input
                           type='text'
                           value={item.quantity}
                           className='w-[40px] text-center bg-transparent outline-none'
                           readOnly
                         />
-                        <button className='text-gray-900 px-2'>+</button>
+                        <button
+                          className='text-gray-900 px-2'
+                          onClick={() =>
+                            handleQuantityChange(item.productId, 1)
+                          }
+                        >
+                          +
+                        </button>
                       </div>
                     </td>
 
@@ -183,18 +217,36 @@ export default function CartPage() {
             </table>
           </div>
 
-          <div className='bg-gray-100 rounded-lg p-6 w-[30%] h-fit shadow-md'>
-            <h2 className='text-lg font-semibold mb-3'>Cart Totals</h2>
-            <p className='text-gray-700'>
-              Subtotal: ₹{cartData?.totals.subtotal}
-            </p>
-            <p className='text-gray-700'>
-              Discount: ₹{cartData?.totals.discount}
-            </p>
-            <p className='text-gray-700'>Tax: ₹{cartData?.totals.tax}</p>
-            <p className='font-bold text-lg mt-2'>
-              Total: ₹{cartData?.totals.total}
-            </p>
+          <div className='bg-gray-100 rounded-lg p-6 w-[30%] h-fit shadow-md font-Poppins underline'>
+            <h2 className='text-lg font-semibold mb-3 text-left'>
+              Cart Totals
+            </h2>
+
+            <div className='space-y-2'>
+              <div className='flex justify-between'>
+                <p className='text-gray-700'>Subtotal:</p>
+                <p className='text-gray-700 underline'>
+                  ₹{cartData?.totals.subtotal}
+                </p>
+              </div>
+              <div className='flex justify-between'>
+                <p className='text-gray-700'>Discount:</p>
+                <p className='text-gray-700 underline'>
+                  ₹{cartData?.totals.discount}
+                </p>
+              </div>
+              <div className='flex justify-between'>
+                <p className='text-gray-700'>Tax:</p>
+                <p className='text-gray-700 underline'>
+                  ₹{cartData?.totals.tax}
+                </p>
+              </div>
+              <div className='flex justify-between font-bold text-lg mt-2'>
+                <p>Total:</p>
+                <p className='underline'>₹{cartData?.totals.total}</p>
+              </div>
+            </div>
+
             <button
               className='bg-yellow-500 text-white py-3 px-6 rounded-lg mt-4 w-full'
               onClick={handleCheckout}

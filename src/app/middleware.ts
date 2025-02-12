@@ -9,7 +9,6 @@ export function middleware(req: NextRequest) {
   const urlPath = req.nextUrl.pathname;
 
   if (protectedRoutes.includes(urlPath)) {
-    console.log('include');
     const authHeader = req.headers.get('authorization');
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {

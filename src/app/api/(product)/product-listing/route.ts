@@ -7,7 +7,6 @@ export async function GET() {
     await connectToDatabase();
 
     const products = await Product.find({});
-    console.log('products', products);
     return NextResponse.json(products, { status: 200 });
   } catch (error) {
     console.error('Error fetching products:', error);

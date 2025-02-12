@@ -57,6 +57,11 @@ export default function Header() {
       </div>
 
       <div className='flex items-center gap-4 sm:gap-6 text-[#ECC75D] text-xl sm:text-2xl md:text-3xl cursor-pointer'>
+        <ShoppingCartOutlined
+          onClick={goToCart}
+          className='hover:text-yellow-500 transition'
+          title='Cart'
+        />
         {isSignedIn ? (
           <LogoutOutlined
             onClick={handleLogin}
@@ -70,11 +75,6 @@ export default function Header() {
             title='Login'
           />
         )}
-        <ShoppingCartOutlined
-          onClick={goToCart}
-          className='hover:text-yellow-500 transition'
-          title='Cart'
-        />
       </div>
     </div>
   );
