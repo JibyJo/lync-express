@@ -13,6 +13,7 @@ import {
 } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import Header from '@/components/Header';
+
 export type Product = {
   _id: string;
   name: string;
@@ -26,6 +27,7 @@ export type Product = {
   imageUrl: string;
   badge: string;
 };
+
 export default function ProductPage() {
   const router = useRouter();
   const { id } = useParams();
@@ -37,7 +39,6 @@ export default function ProductPage() {
   useEffect(() => {
     async function fetchProduct() {
       const res = await fetch(`/api/product-detail/${id}`);
-      console.log('res', res);
       const data = await res.json();
       setProduct(data);
     }
@@ -55,7 +56,6 @@ export default function ProductPage() {
   };
 
   const handleAddToCart = async () => {
-    console.log('clicked', quantity);
     try {
       if (!isAuthenticated) {
         localStorage.setItem(
@@ -83,10 +83,12 @@ export default function ProductPage() {
       }
     } catch (e) {
       console.log('e', e);
-      toast.error('Some error occured');
+      toast.error('Some error occurred');
     }
   };
-  if (!product) return <p>Loading...</p>;
+
+  if (!product) return <p className='text-center mt-10'>Loading...</p>;
+
   const getStarIcons = (rating: number) => {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;
@@ -108,33 +110,39 @@ export default function ProductPage() {
       </span>
     );
   };
+
   return (
     <>
       <div className='item-center'>
         <Header />
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-8 pt-40'>
-        <div className='relative flex justify-center w-[600px] h-[638px]  rounded-lg'>
-          <Image
-            src={product.image_url ?? '/logo.png'}
-            alt={product.name}
-            width={600}
-            height={638}
-            className='absolute w-full h-full object-contain rounded-lg'
-          />
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-8 pt-20 px-6'>
+        <div className='flex justify-center'>
+          <div className='relative w-full max-w-[600px] h-auto rounded-lg'>
+            <Image
+              src={product.image_url ?? '/logo.png'}
+              alt={product.name}
+              width={600}
+              height={638}
+              className='w-full h-auto object-contain rounded-lg'
+            />
+          </div>
         </div>
 
-        <div className='space-y-4 z-20'>
+        <div className='space-y-4'>
           <div className='flex items-center space-x-2 text-yellow-500 font-semibold'>
             <span>{getStarIcons(product.rating)}</span>
-            <span className='text-gray-600'>{product.rating} Star Rating</span>
+            <span className='text-gray-600 text-sm sm:text-base'>
+              {product.rating} Star Rating
+            </span>
           </div>
-          <span className='text-gray-900 font-poppins font-normal text-[22px] leading-[20px] tracking-normal underline underline-offset-auto decoration-solid decoration-auto decoration-skip-ink-auto'>
-            {product.name}
-          </span>
 
-          <p className='text-gray-600 underline'>
+          <h1 className='text-gray-900 font-poppins font-bold text-xl sm:text-2xl leading-6 tracking-normal underline'>
+            {product.name}
+          </h1>
+
+          <p className='text-gray-600 text-sm sm:text-base'>
             <strong>Sku:</strong>{' '}
             <span className='text-blue-600'>{product.sku}</span> <br />
             <strong>Brand:</strong>{' '}
@@ -149,18 +157,20 @@ export default function ProductPage() {
             <span className='text-black font-semibold'>{product.category}</span>
           </p>
 
-          <p className='text-3xl font-bold text-blue-600'>₹{product.price}</p>
+          <p className='text-2xl sm:text-3xl font-bold text-blue-600'>
+            ₹{product.price}
+          </p>
 
-          <div className='flex flex-row justify-between items-center px-5 py-4 gap-6 w-[164px] h-[56px] bg-white border-2 border-[#E4E7E9] rounded-[16px]'>
+          <div className='flex items-center justify-between w-full max-w-[200px] border-2 border-gray-300 rounded-lg px-4 py-2'>
             <button
               className='text-lg font-bold text-gray-700'
-              disabled={quantity == 1}
+              disabled={quantity === 1}
               onClick={() => handleQuantityChange(Math.max(1, quantity - 1))}
             >
-              <MinusOutlined disabled={quantity == 1} />
+              <MinusOutlined />
             </button>
 
-            <span className='text-lg font-semibold text-gray-700 underline'>
+            <span className='text-lg font-semibold text-gray-700'>
               {quantity < 10 ? `0${quantity}` : quantity}
             </span>
 
@@ -172,7 +182,7 @@ export default function ProductPage() {
             </button>
           </div>
 
-          <div className='flex flex-row items-start px-0 pt-3 gap-4 w-[310px] h-[68px]'>
+          <div className='w-full'>
             <button
               onClick={handleAddToCart}
               className='w-full md:w-auto bg-orange-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-orange-600 transition underline'

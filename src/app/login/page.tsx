@@ -30,13 +30,14 @@ export default function LoginPage() {
         toast.error(data.error);
         return;
       }
-      if (data && data.token) {
+      if (data?.token) {
         localStorage.setItem('authToken', data.token);
+
         if (localStorage.getItem('pendingCartItem')) {
           const cartItem = JSON.parse(
             localStorage.getItem('pendingCartItem') ?? ''
           );
-          console.log('cartItem', cartItem);
+
           const cartResponse = await fetch('/api/cart', {
             method: 'POST',
             headers: {
@@ -45,14 +46,18 @@ export default function LoginPage() {
             },
             body: JSON.stringify(cartItem),
           });
+
           if (!cartResponse.ok) {
             toast.error('Failed to add item');
-          } else if (cartResponse) {
+          } else {
             toast.success('Item added to cart');
             localStorage.removeItem('pendingCartItem');
           }
         }
-        router.push('/product-listing');
+        setTimeout(() => {
+          toast.success('Logged in successfully');
+        }, 100);
+        router.push('/');
       }
     } catch (error) {
       toast.error(error.message);
@@ -62,26 +67,25 @@ export default function LoginPage() {
 
   return (
     <>
-      <div className='item-center'>
-        <Header />
-      </div>
-      <div className='flex justify-center items-center min-h-screen  px-4 md:px-6'>
-        <div className='w-full md:w-1/2 flex justify-center'>
+      <Header />
+      <div className='flex flex-col lg:flex-row justify-center items-center min-h-screen px-4 md:px-8'>
+        <div className='w-full lg:w-1/2 flex justify-center mb-8 lg:mb-0'>
           <Image
             src='/truck.png'
             alt='Lync Express 3D Truck'
             width={480}
             height={480}
-            className='w-[280px] md:w-[420px] lg:w-[480px] object-contain'
+            className='w-[80%] max-w-[400px] md:max-w-[480px] object-contain'
             unoptimized
           />
         </div>
 
-        <div className='w-full md:w-1/2 flex flex-col justify-center items-center'>
+        <div className='w-full lg:w-1/2 flex justify-center'>
           <div className='w-full max-w-md bg-white bg-opacity-80 backdrop-blur-xl rounded-xl shadow-lg p-6 md:p-10'>
-            <h2 className='text-2xl md:text-3xl font- font-bold text-gray-900 text-left'>
+            <h2 className='text-2xl md:text-3xl font-bold text-gray-900 text-left'>
               Welcome To Lync Express
             </h2>
+
             <Formik
               initialValues={{ email: '', password: '' }}
               validationSchema={validationSchema}
@@ -96,8 +100,8 @@ export default function LoginPage() {
                     <Field
                       type='email'
                       name='email'
-                      className='w-full p-3 border border-gray-300 rounded-lg'
-                      placeholder='example@email.com'
+                      className='w-full p-3 border border-gray-300 rounded-lg focus:outline-none text-gray-600 focus:ring-2 focus:ring-yellow-400'
+                      placeholder='Type in your email'
                     />
                     <ErrorMessage
                       name='email'
@@ -114,7 +118,7 @@ export default function LoginPage() {
                       <Field
                         type={showPassword ? 'text' : 'password'}
                         name='password'
-                        className='w-full p-3 pr-10 border border-gray-300 rounded-lg'
+                        className='w-full p-3 pr-10 border border-gray-300 text-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400'
                         placeholder='Enter your password'
                       />
                       <button
@@ -138,7 +142,7 @@ export default function LoginPage() {
 
                   <button
                     type='submit'
-                    className='w-full md:w-36 mt-6 bg-yellow-500 text-white py-3 rounded-lg text-lg font-semibold'
+                    className='w-full md:w-40 mt-6 bg-yellow-500 text-white py-3 rounded-lg text-lg font-semibold hover:bg-yellow-600 transition'
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? 'Signing in...' : 'Sign In'}

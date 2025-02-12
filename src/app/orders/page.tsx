@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import { CheckCircleTwoTone } from '@ant-design/icons';
 import Link from 'next/link';
 
-export default function Home() {
+export default function OrderSuccess() {
   return (
     <>
       <div className='item-center'>
@@ -27,12 +27,14 @@ export default function Home() {
         </div>
 
         <div className='mt-6 flex justify-center space-x-4'>
-          <button className='px-6 py-2 border border-yellow-500 text-yellow-500 rounded-full hover:bg-yellow-100'>
-            GO TO DASHBOARD
-          </button>
+          <Link href='/'>
+            <button className='px-6 py-2 border border-yellow-500 text-yellow-500 rounded-full hover:bg-yellow-100'>
+              GO TO DASHBOARD
+            </button>
+          </Link>
           <Link href={'/order-listing'}>
             <button className='px-6 py-2 bg-yellow-500 text-white rounded-full hover:bg-yellow-600'>
-              VIEW ORDER →
+              VIEW ORDERS →
             </button>
           </Link>
         </div>

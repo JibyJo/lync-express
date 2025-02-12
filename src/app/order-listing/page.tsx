@@ -47,7 +47,7 @@ export default function OrderPage() {
     }
 
     fetchOrders();
-  }, [router]);
+  }, []);
 
   if (orders.length === 0) {
     return <p className='text-center mt-10 text-gray-700'>No orders found.</p>;
