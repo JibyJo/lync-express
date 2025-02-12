@@ -6,6 +6,7 @@ import { CloseCircleTwoTone } from '@ant-design/icons';
 import Header from '@/components/Header';
 import { toast } from 'react-toastify';
 import Modal from '@/components/Modal';
+import Link from 'next/link';
 
 interface CartItem {
   productId: string;
@@ -167,9 +168,11 @@ export default function CartPage() {
                         height={50}
                         className='rounded'
                       />
-                      <span className='text-sm underline text-[#191C1F]'>
-                        {item.name}
-                      </span>
+                      <Link href={`/product-detail/${item.productId}`}>
+                        <span className='text-sm underline text-[#191C1F]'>
+                          {item.name}
+                        </span>
+                      </Link>
                     </td>
 
                     <td className='py-3 text-left w-[15%] text-gray-700'>
@@ -215,18 +218,36 @@ export default function CartPage() {
             </table>
           </div>
 
-          <div className='bg-gray-100 rounded-lg p-6 w-[30%] h-fit shadow-md'>
-            <h2 className='text-lg font-semibold mb-3'>Cart Totals</h2>
-            <p className='text-gray-700'>
-              Subtotal: ₹{cartData?.totals.subtotal}
-            </p>
-            <p className='text-gray-700'>
-              Discount: ₹{cartData?.totals.discount}
-            </p>
-            <p className='text-gray-700'>Tax: ₹{cartData?.totals.tax}</p>
-            <p className='font-bold text-lg mt-2'>
-              Total: ₹{cartData?.totals.total}
-            </p>
+          <div className='bg-gray-100 rounded-lg p-6 w-[30%] h-fit shadow-md font-Poppins underline'>
+            <h2 className='text-lg font-semibold mb-3 text-left'>
+              Cart Totals
+            </h2>
+
+            <div className='space-y-2'>
+              <div className='flex justify-between'>
+                <p className='text-gray-700'>Subtotal:</p>
+                <p className='text-gray-700 underline'>
+                  ₹{cartData?.totals.subtotal}
+                </p>
+              </div>
+              <div className='flex justify-between'>
+                <p className='text-gray-700'>Discount:</p>
+                <p className='text-gray-700 underline'>
+                  ₹{cartData?.totals.discount}
+                </p>
+              </div>
+              <div className='flex justify-between'>
+                <p className='text-gray-700'>Tax:</p>
+                <p className='text-gray-700 underline'>
+                  ₹{cartData?.totals.tax}
+                </p>
+              </div>
+              <div className='flex justify-between font-bold text-lg mt-2'>
+                <p>Total:</p>
+                <p className='underline'>₹{cartData?.totals.total}</p>
+              </div>
+            </div>
+
             <button
               className='bg-yellow-500 text-white py-3 px-6 rounded-lg mt-4 w-full'
               onClick={handleCheckout}
