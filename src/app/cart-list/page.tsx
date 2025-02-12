@@ -64,7 +64,6 @@ export default function CartPage() {
   }, []);
 
   const handleQuantityChange = async (productId: string, quantity: number) => {
-    console.log('quantity', quantity);
     const token = localStorage.getItem('authToken');
     await fetch('/api/cart', {
       method: 'POST',

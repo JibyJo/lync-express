@@ -78,8 +78,11 @@ export async function GET(req: NextRequest) {
       (sum: number, item: CartItem) => sum + (item?.subTotal || 0),
       0
     );
-    const discount = Math.floor(subtotal * 0.075);
-    const tax = Math.floor(subtotal * 0.18);
+
+    const discount = subtotal > 2500 ? Math.floor(subtotal * 0.05) : 0;
+
+    const tax = Math.floor(subtotal * 0.1);
+
     const total = subtotal - discount + tax;
 
     return NextResponse.json({
