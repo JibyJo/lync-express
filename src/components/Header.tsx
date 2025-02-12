@@ -10,64 +10,71 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 export default function Header() {
-  const token = localStorage.getItem('authToken') ?? null;
-  const [isSignedIn, setIsSignedIn] = useState<boolean>();
-  useEffect(() => {
-    setIsSignedIn(token ? true : false);
-  }, []);
+  const [isSignedIn, setIsSignedIn] = useState<boolean>(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken') ?? null;
+    setIsSignedIn(!!token);
+  }, []);
+
   const goToCart = () => {
     if (!isSignedIn) {
-      toast.info('Please login to contine to cart');
+      toast.info('Please login to continue to cart');
     } else {
-      setTimeout(() => {
-        router.push('/cart-list');
-      }, 500);
-      console.log('not');
+      router.push('/cart-list');
     }
   };
-  const handleLogin = () => {
-    console.log('s', token);
 
+  const handleLogin = () => {
     if (isSignedIn) {
-      console.log('token', token);
-      localStorage.clear();
+      localStorage.removeItem('authToken'); // Only remove the token instead of clearing entire localStorage
       setIsSignedIn(false);
       router.push('/');
     } else {
-      setTimeout(() => {
-        router.push('/login');
-      }, 500);
+      router.push('/login');
     }
   };
+
   return (
-    <div className='flex justify-between items-center h-[64px] bg-white rounded-[32px] shadow-md px-6 mt-[0px]'>
-      <div className='flex items-center gap-3' onClick={() => router.push('/')}>
+    <div className='flex justify-between items-center w-full bg-white shadow-md px-6 py-3 rounded-xl md:rounded-[32px]'>
+      {/* Logo - Clickable */}
+      <div
+        className='flex items-center gap-3 cursor-pointer'
+        onClick={() => router.push('/')}
+      >
         <Image
           priority
           src='/logo.png'
           alt='Lync Express Logo'
-          width={60}
-          height={51}
+          width={50}
+          height={40}
           className='object-contain'
         />
-        <span className='text-[32px] font-normal leading-[48px] text-[#ECC75D] font-poppins'>
+        <span className='text-xl sm:text-2xl md:text-3xl font-semibold text-[#ECC75D] font-poppins'>
           Lync <span className='text-[#EE5858]'>Express</span>
         </span>
       </div>
 
-      <div className='flex z-30 items-center gap-5 text-[#ECC75D] text-[32px] cursor-pointer'>
+      {/* Cart & Login Buttons */}
+      <div className='flex items-center gap-4 sm:gap-6 text-[#ECC75D] text-xl sm:text-2xl md:text-3xl cursor-pointer'>
         {isSignedIn ? (
           <LogoutOutlined
-            onClick={() => handleLogin()}
+            onClick={handleLogin}
             className='hover:text-yellow-500 transition'
+            title='Logout'
           />
         ) : (
-          <LoginOutlined onClick={() => handleLogin()} />
+          <LoginOutlined
+            onClick={handleLogin}
+            className='hover:text-yellow-500 transition'
+            title='Login'
+          />
         )}
         <ShoppingCartOutlined
           onClick={goToCart}
           className='hover:text-yellow-500 transition'
+          title='Cart'
         />
       </div>
     </div>
