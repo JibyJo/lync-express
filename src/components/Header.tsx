@@ -46,15 +46,12 @@ export default function Header() {
       >
         <Image
           priority
-          src='/logo.png'
+          src='/logo.svg'
           alt='Lync Express Logo'
-          width={50}
-          height={40}
-          className='object-contain'
+          width={331}
+          height={300}
+          className='object-contain -ml-8'
         />
-        <span className='text-xl sm:text-2xl md:text-3xl font-semibold text-[#ECC75D] font-poppins'>
-          Lync <span className='text-[#EE5858]'>Express</span>
-        </span>
       </div>
 
       <div className='flex items-center gap-4 sm:gap-6 text-[#ECC75D] text-xl sm:text-2xl md:text-3xl cursor-pointer'>
